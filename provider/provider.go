@@ -21,11 +21,11 @@ func (p ServiceProvider) Devices(w http.ResponseWriter, r *http.Request, creaden
 	if err != nil {
 		return
 	}
-	// rooms, _, err := p.OpenhabClient.GetRooms(creadentials)
+	rooms, _, err := p.OpenhabClient.GetRooms(creadentials)
 	if err != nil {
 		return
 	}
-	devices, err := p.Mapper.MapOpenhabItemToYandexDevice(items, nil)
+	devices, err := p.Mapper.MapOpenhabItemToYandexDevice(items, rooms)
 	if err != nil {
 		return
 	}
