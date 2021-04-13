@@ -16,18 +16,16 @@ func NewServiceProvider() ServiceProvider {
 	return ServiceProvider{NewMapper(), NewOpenhabClient()}
 }
 
-func (p ServiceProvider) Ping(w http.ResponseWriter, r *http.Request) {}
-
 func (p ServiceProvider) Devices(w http.ResponseWriter, r *http.Request, creadentials string) (err error) {
 	items, _, err := p.OpenhabClient.GetItems(creadentials)
 	if err != nil {
 		return
 	}
-	rooms, _, err := p.OpenhabClient.GetRooms(creadentials)
+	// rooms, _, err := p.OpenhabClient.GetRooms(creadentials)
 	if err != nil {
 		return
 	}
-	devices, err := p.Mapper.MapOpenhabItemToYandexDevice(items, rooms)
+	devices, err := p.Mapper.MapOpenhabItemToYandexDevice(items, nil)
 	if err != nil {
 		return
 	}

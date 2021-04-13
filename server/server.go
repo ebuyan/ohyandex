@@ -40,18 +40,18 @@ func (h *Http) Start() {
 	r.HandleFunc("/login", h.identityProvider.Login).Methods(http.MethodPost)
 	r.HandleFunc("/auth", h.identityProvider.Auth).Methods(http.MethodGet)
 
-	r.HandleFunc("/oauth/authorize", h.handler.handleError(h.oAuthServer.Authorize)).Methods(http.MethodGet)
-	r.HandleFunc("/oauth/token", h.handler.handleError(h.oAuthServer.Token)).Methods(http.MethodPost)
-	r.HandleFunc("/oauth/refresh", h.handler.handleError(h.oAuthServer.Token)).Methods(http.MethodPost)
+	r.HandleFunc("/oauth/authorize", h.handler.HandleError(h.oAuthServer.Authorize)).Methods(http.MethodGet)
+	r.HandleFunc("/oauth/token", h.handler.HandleError(h.oAuthServer.Token)).Methods(http.MethodPost)
+	r.HandleFunc("/oauth/refresh", h.handler.HandleError(h.oAuthServer.Token)).Methods(http.MethodPost)
 
-	r.HandleFunc("/provider", h.serviceProvider.Ping).Methods(http.MethodGet)
-	r.HandleFunc("/provider/v1.0", h.serviceProvider.Ping).Methods(http.MethodGet)
+	r.HandleFunc("/provider", h.handler.Ping).Methods(http.MethodGet)
+	r.HandleFunc("/provider/v1.0", h.handler.Ping).Methods(http.MethodGet)
 
-	r.HandleFunc("/provider/v1.0/user/unlink", h.handler.handleError(h.oAuthServer.DeleteToken)).Methods(http.MethodPost)
+	r.HandleFunc("/provider/v1.0/user/unlink", h.handler.HandleError(h.oAuthServer.DeleteToken)).Methods(http.MethodPost)
 
-	r.HandleFunc("/provider/v1.0/user/devices", h.handler.bearerAuth(h.serviceProvider.Devices)).Methods(http.MethodGet)
-	r.HandleFunc("/provider/v1.0/user/devices/query", h.handler.bearerAuth(h.serviceProvider.DevicesState)).Methods(http.MethodPost)
-	r.HandleFunc("/provider/v1.0/user/devices/action", h.handler.bearerAuth(h.serviceProvider.ControlDevices)).Methods(http.MethodPost)
+	r.HandleFunc("/provider/v1.0/user/devices", h.handler.BearerAuth(h.serviceProvider.Devices)).Methods(http.MethodGet)
+	r.HandleFunc("/provider/v1.0/user/devices/query", h.handler.BearerAuth(h.serviceProvider.DevicesState)).Methods(http.MethodPost)
+	r.HandleFunc("/provider/v1.0/user/devices/action", h.handler.BearerAuth(h.serviceProvider.ControlDevices)).Methods(http.MethodPost)
 
 	http.Handle("/", r)
 	http.ListenAndServe(h.host, nil)
