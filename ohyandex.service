@@ -15,9 +15,7 @@ StandardError=append:/var/log/ohyandex/app.log
 Restart=on-failure
 RestartSec=10
 
-ExecStartPre=/bin/mkdir -p /var/log/ohyandex
 ExecStartPre=/bin/chown syslog:adm /var/log/ohyandex
-ExecStartPre=/bin/touch /var/log/ohyandex/app.log
 ExecStartPre=/bin/chmod 775 /opt/ohyandex/ohyandex
 
 [Install]
