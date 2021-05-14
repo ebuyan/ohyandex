@@ -7,6 +7,6 @@ type OAuthStore struct{ *store.ClientStore }
 func NewOAuthStore() OAuthStore {
 	config := NewOAuthConfig()
 	store := store.NewClientStore()
-	store.Set(config.Client.ID, &config.Client)
+	store.Set(config.ID, &config)
 	return OAuthStore{store}
 }

@@ -8,21 +8,20 @@ import (
 	"gopkg.in/oauth2.v3"
 )
 
-type OAuthServer struct{ server *server.Server }
+type OAuthServer struct{ *server.Server }
 
 func NewOAuthServer() *OAuthServer {
-	manager := NewOAuthManager()
-	srv := server.NewServer(server.NewConfig(), manager.Manager)
-	s := OAuthServer{server: srv}
+	srv := server.NewServer(server.NewConfig(), NewOAuthManager())
+	s := OAuthServer{srv}
 
-	s.server.SetUserAuthorizationHandler(userAuthorizeHandler)
-	s.server.SetClientInfoHandler(clientInfoHandler)
+	s.SetUserAuthorizationHandler(userAuthorizeHandler)
+	s.SetClientInfoHandler(clientInfoHandler)
 
 	return &s
 }
 
 func (s OAuthServer) Auth(r *http.Request) (ti oauth2.TokenInfo, err error) {
-	ti, err = s.server.ValidationBearerToken(r)
+	ti, err = s.ValidationBearerToken(r)
 	return
 }
 
@@ -31,12 +30,12 @@ func (s OAuthServer) Authorize(w http.ResponseWriter, r *http.Request) (err erro
 	if v, ok := session.GetQueryParams(); ok {
 		r.Form = v
 	}
-	err = s.server.HandleAuthorizeRequest(w, r)
+	err = s.HandleAuthorizeRequest(w, r)
 	return
 }
 
 func (s OAuthServer) Token(w http.ResponseWriter, r *http.Request) (err error) {
-	err = s.server.HandleTokenRequest(w, r)
+	err = s.HandleTokenRequest(w, r)
 	return
 }
 
@@ -45,7 +44,7 @@ func (s OAuthServer) DeleteToken(w http.ResponseWriter, r *http.Request) (err er
 	if err != nil {
 		return
 	}
-	s.server.Manager.RemoveAccessToken(token.GetAccess())
+	s.Manager.RemoveAccessToken(token.GetAccess())
 	session := session.GetSession(w, r)
 	session.Flush()
 	return
