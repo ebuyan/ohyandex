@@ -2,3 +2,4 @@ db
 .vscode
 .env.local
 vendor
+.idea

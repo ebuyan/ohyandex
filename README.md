@@ -1,7 +1,7 @@
 # Provider API устройств Openhab в Yandex-dialogs
 
-`./ohyandex` собран под ARM \
-`GOOS=linux GOARCH=arm GOARM=6 go build -o ohyandex cmd/ohyandex/main.go`
+`./ohyandex` собран под AMD \
+`go build -o ohyandex cmd/ohyandex/main.go`
 
 <h3>.env.local</h3>
 
