@@ -1,4 +1,4 @@
-module ohyandex
+module github.com/ebuyan/ohyandex
 
 go 1.13
 

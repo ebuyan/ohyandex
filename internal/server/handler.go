@@ -3,8 +3,8 @@ package server
 import (
 	"net/http"
 
-	"ohyandex/internal/oauth"
-	"ohyandex/pkg/logger"
+	"github.com/ebuyan/ohyandex/internal/oauth"
+	"github.com/ebuyan/ohyandex/pkg/logger"
 )
 
 type Handler struct {

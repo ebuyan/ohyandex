@@ -1,8 +1,8 @@
 package oauth
 
 import (
+	"github.com/ebuyan/ohyandex/pkg/session"
 	"net/http"
-	"ohyandex/pkg/session"
 
 	"github.com/go-oauth2/oauth2/server"
 	"gopkg.in/oauth2.v3"

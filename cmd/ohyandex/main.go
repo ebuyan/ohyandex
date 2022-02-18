@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ohyandex/internal/server"
+	"github.com/ebuyan/ohyandex/internal/server"
 
 	"github.com/joho/godotenv"
 )

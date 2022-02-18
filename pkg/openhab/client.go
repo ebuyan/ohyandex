@@ -14,40 +14,40 @@ func NewClient() Client {
 	return Client{baseUrl: os.Getenv("OPENHAB_HOST")}
 }
 
-func (c Client) Ping(cregentials string) (bool, error) {
-	_, status, err := c.sendRequest(cregentials, "/rest/uuid", "GET", nil)
+func (c Client) Ping(credentials string) (bool, error) {
+	_, status, err := c.sendRequest(credentials, "/rest/uuid", "GET", nil)
 	return status == http.StatusOK, err
 }
 
-func (c Client) GetItem(cregentials string, itemName string) (item Item, status int, err error) {
-	body, status, err := c.sendRequest(cregentials, "/rest/items/"+itemName, "GET", nil)
+func (c Client) GetItem(credentials string, itemName string) (item Item, status int, err error) {
+	body, status, err := c.sendRequest(credentials, "/rest/items/"+itemName, "GET", nil)
 	json.Unmarshal(body, &item)
 	return
 }
 
-func (c Client) GetAllItemsByTag(cregentials, tag string) (items []Item, status int, err error) {
-	body, status, err := c.sendRequest(cregentials, "/rest/items?tags="+tag, "GET", nil)
+func (c Client) GetAllItemsByTag(credentials, tag string) (items []Item, status int, err error) {
+	body, status, err := c.sendRequest(credentials, "/rest/items?tags="+tag, "GET", nil)
 	json.Unmarshal(body, &items)
 	return
 }
 
-func (c Client) GetRooms(cregentials string) (items []Item, status int, err error) {
-	body, status, err := c.sendRequest(cregentials, "/rest/items?tags=Room", "GET", nil)
+func (c Client) GetRooms(credentials string) (items []Item, status int, err error) {
+	body, status, err := c.sendRequest(credentials, "/rest/items?tags=Room", "GET", nil)
 	json.Unmarshal(body, &items)
 	return
 }
 
-func (c Client) SetState(cregentials string, itemName string, value string) (status int, err error) {
-	_, status, err = c.sendRequest(cregentials, "/rest/items/"+itemName, "POST", []byte(value))
+func (c Client) SetState(credentials string, itemName string, value string) (status int, err error) {
+	_, status, err = c.sendRequest(credentials, "/rest/items/"+itemName, "POST", []byte(value))
 	return
 }
 
-func (c Client) sendRequest(cregentials string, url string, methodType string, reqBody []byte) (body []byte, status int, err error) {
+func (c Client) sendRequest(credentials string, url string, methodType string, reqBody []byte) (body []byte, status int, err error) {
 	req, err := http.NewRequest(methodType, c.baseUrl+url, bytes.NewBuffer(reqBody))
 	if err != nil {
 		return
 	}
-	req.Header.Set("Authorization", "Basic "+cregentials)
+	req.Header.Set("Authorization", "Basic "+credentials)
 	if methodType == http.MethodGet {
 		req.Header.Set("Content-Type", "application/json")
 	} else {

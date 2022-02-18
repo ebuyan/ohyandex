@@ -3,10 +3,10 @@ package identity
 import (
 	"encoding/base64"
 	"errors"
+	"github.com/ebuyan/ohyandex/pkg/openhab"
+	"github.com/ebuyan/ohyandex/pkg/session"
+	"github.com/ebuyan/ohyandex/pkg/view"
 	"net/http"
-	"ohyandex/pkg/openhab"
-	"ohyandex/pkg/session"
-	"ohyandex/pkg/view"
 )
 
 type Provider struct {
@@ -45,7 +45,7 @@ func (p Provider) Auth(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusFound)
 }
 
-func (p Provider) checkUsernameAndPassword(w http.ResponseWriter, r *http.Request) (credentials string, err error) {
+func (p Provider) checkUsernameAndPassword(_ http.ResponseWriter, r *http.Request) (credentials string, err error) {
 	if r.Form == nil {
 		r.ParseForm()
 	}
@@ -59,6 +59,6 @@ func (p Provider) checkUsernameAndPassword(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		return
 	}
-	err = errors.New("Invalid username or password.")
+	err = errors.New("invalid username or password")
 	return
 }

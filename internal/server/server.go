@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"os"
 
-	"ohyandex/internal/device"
-	"ohyandex/internal/identity"
-	"ohyandex/internal/oauth"
+	"github.com/ebuyan/ohyandex/internal/device"
+	"github.com/ebuyan/ohyandex/internal/identity"
+	"github.com/ebuyan/ohyandex/internal/oauth"
 
 	"github.com/gorilla/mux"
 )

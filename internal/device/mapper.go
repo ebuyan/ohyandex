@@ -1,6 +1,6 @@
 package device
 
-import "ohyandex/pkg/openhab"
+import "github.com/ebuyan/ohyandex/pkg/openhab"
 
 type Mapper struct{}
 
