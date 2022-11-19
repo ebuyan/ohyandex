@@ -2,8 +2,8 @@ package device
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/ebuyan/ohyandex/pkg/logger"
 	"github.com/ebuyan/ohyandex/pkg/openhab"
@@ -65,21 +65,20 @@ func (p Provider) ControlDevices(w http.ResponseWriter, r *http.Request, credent
 	if err = json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return
 	}
-	logger.Info(r, fmt.Sprintf("%+v", request))
 	for _, item := range request.Payload.Devices {
 		val := ""
-		switch item.Type {
-		case TypeLight, TypeSwitch:
-			if item.Capabilities[0].State.Value == true {
-				val = "ON"
-			} else {
-				val = "OFF"
-			}
-		case TypeCurtain:
+		// Костыль для штор
+		if strings.Contains(item.Id, "Roller") {
 			if item.Capabilities[0].State.Value == true {
 				val = "UP"
 			} else {
 				val = "DOWN"
+			}
+		} else {
+			if item.Capabilities[0].State.Value == true {
+				val = "ON"
+			} else {
+				val = "OFF"
 			}
 		}
 		logger.Info(r, "Item "+item.Id+" set "+val)
