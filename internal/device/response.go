@@ -12,18 +12,6 @@ func NewResponse(userId string, devices []Device) Response {
 	}
 }
 
-func (s State) getValue() (value string) {
-	switch s.Instance {
-	case "on":
-		if s.Value == true {
-			value = "ON"
-		} else {
-			value = "OFF"
-		}
-	}
-	return
-}
-
 type Response struct {
 	Id      string  `json:"request_id"`
 	Payload Payload `json:"payload"`

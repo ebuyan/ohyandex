@@ -36,9 +36,9 @@ func (p Provider) Devices(w http.ResponseWriter, r *http.Request, credentials st
 }
 
 func (p Provider) DevicesState(w http.ResponseWriter, r *http.Request, credentials string) (err error) {
-	var payload DevicePayload
+	var payload RequestPayload
 	var items []openhab.Item
-	json.NewDecoder(r.Body).Decode(&payload)
+	_ = json.NewDecoder(r.Body).Decode(&payload)
 	for _, rItem := range payload.Devices {
 		item, _, err := p.GetItem(credentials, rItem.Id)
 		if err != nil {
@@ -60,14 +60,33 @@ func (p Provider) DevicesState(w http.ResponseWriter, r *http.Request, credentia
 }
 
 func (p Provider) ControlDevices(w http.ResponseWriter, r *http.Request, credentials string) (err error) {
-	var request DeviceRequest
-	json.NewDecoder(r.Body).Decode(&request)
-	for _, rItem := range request.Payload.Devices {
-		state := &rItem.Capabilities[0].State
-		val := state.getValue()
-		logger.Info(r, "Item "+rItem.Id+" set "+val)
-		status, err := p.SetState(credentials, rItem.Id, val)
-		state.ActionResult = NewActionResult(status, err)
+	var request Request
+	if err = json.NewDecoder(r.Body).Decode(&request); err != nil {
+		return
+	}
+
+	for _, item := range request.Payload.Devices {
+		val := ""
+		switch item.Type {
+		case TypeLight, TypeSwitch:
+			if item.Capabilities[0].State.Value == true {
+				val = "ON"
+			} else {
+				val = "OFF"
+			}
+		case TypeCurtain:
+			if item.Capabilities[0].State.Value == true {
+				val = "UP"
+			} else {
+				val = "DOWN"
+			}
+		}
+		logger.Info(r, "Item "+item.Id+" set "+val)
+		var status int
+		if status, err = p.SetState(credentials, item.Id, val); err != nil {
+			return
+		}
+		item.Capabilities[0].State.ActionResult = NewActionResult(status, err)
 	}
 	p.sendResponse(w, credentials, request.Payload.Devices)
 	return
@@ -77,13 +96,13 @@ func (p Provider) sendResponse(w http.ResponseWriter, credentials string, device
 	response := NewResponse(credentials, devices)
 	js, _ := json.Marshal(response)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	_, _ = w.Write(js)
 }
 
-type DeviceRequest struct {
-	Payload DevicePayload `json:"payload"`
+type Request struct {
+	Payload RequestPayload `json:"payload"`
 }
 
-type DevicePayload struct {
+type RequestPayload struct {
 	Devices []Device `json:"devices"`
 }

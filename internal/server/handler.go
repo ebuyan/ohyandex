@@ -8,14 +8,14 @@ import (
 )
 
 type Handler struct {
-	*oauth.OAuthServer
+	*oauth.Server
 }
 
-func NewHandler(oAuthServer *oauth.OAuthServer) Handler {
+func NewHandler(oAuthServer *oauth.Server) Handler {
 	return Handler{oAuthServer}
 }
 
-func (h Handler) Ping(w http.ResponseWriter, r *http.Request) {}
+func (h Handler) Ping(_ http.ResponseWriter, _ *http.Request) {}
 
 func (h Handler) BearerAuth(f func(w http.ResponseWriter, r *http.Request, userId string) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

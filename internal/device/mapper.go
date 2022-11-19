@@ -38,14 +38,17 @@ func (m Mapper) getRoom(item openhab.Item, rooms []openhab.Item) (roomName strin
 	return
 }
 
-func (m Mapper) getType(item openhab.Item) (itemType string) {
+func (m Mapper) getType(item openhab.Item) string {
 	switch item.Type {
 	case "Switch":
-		itemType = "devices.types.switch"
+		return TypeSwitch
 	case "Light", "Dimmer", "Color":
-		itemType = "devices.types.light"
+		return TypeLight
+	case "Rollershutter":
+		return TypeCurtain
+	default:
+		return ""
 	}
-	return
 }
 
 func (m Mapper) fixType(item *openhab.Item) {
@@ -60,22 +63,25 @@ func (m Mapper) fixType(item *openhab.Item) {
 func (m Mapper) getCapabilities(item openhab.Item) (capabilities []Capability) {
 	switch item.Type {
 	case "Switch", "Light":
-		capabilities = append(capabilities, m.getSwitchCapability(item))
-		return
-	//todo
+		return []Capability{{
+			Type:        CapabilitiesOnOff,
+			Retrievable: true,
+			State: State{
+				Instance: "on",
+				Value:    item.State == "ON",
+			},
+		}}
+	case "Rollershutter":
+		return []Capability{{
+			Type:        CapabilitiesOnOff,
+			Retrievable: true,
+			State: State{
+				Instance: "on",
+				Value:    item.State == "0",
+			},
+		}}
 	case "Dimmer":
 	case "Color":
 	}
 	return
-}
-
-func (m Mapper) getSwitchCapability(item openhab.Item) Capability {
-	return Capability{
-		Type:        "devices.capabilities.on_off",
-		Retrievable: true,
-		State: State{
-			Instance: "on",
-			Value:    item.State == "ON",
-		},
-	}
 }

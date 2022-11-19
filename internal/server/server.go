@@ -14,7 +14,7 @@ import (
 type Http struct {
 	host             string
 	handler          Handler
-	oAuthServer      *oauth.OAuthServer
+	oAuthServer      *oauth.Server
 	deviceProvider   device.Provider
 	identityProvider identity.Provider
 }
@@ -52,5 +52,5 @@ func (h *Http) Start() {
 	r.HandleFunc("/provider/v1.0/user/devices/action", h.handler.BearerAuth(h.deviceProvider.ControlDevices)).Methods(http.MethodPost)
 
 	http.Handle("/", r)
-	http.ListenAndServe(h.host, nil)
+	_ = http.ListenAndServe(h.host, nil)
 }
