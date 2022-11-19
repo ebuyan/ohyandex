@@ -2,6 +2,7 @@ package device
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/ebuyan/ohyandex/pkg/logger"
@@ -64,7 +65,7 @@ func (p Provider) ControlDevices(w http.ResponseWriter, r *http.Request, credent
 	if err = json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return
 	}
-
+	logger.Info(r, fmt.Sprintf("%+v", request))
 	for _, item := range request.Payload.Devices {
 		val := ""
 		switch item.Type {
